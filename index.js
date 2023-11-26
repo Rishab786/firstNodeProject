@@ -1,20 +1,36 @@
-const http = require('http');
-const PORT=3003;
-const server = http.createServer(function (req,res){
-    if(req.url==='/home')
-    {
-        res.write(' Welcome home');
-    }
-    else if(req.url==='/about')
-    {
-        res.write('Welcome to About Us page');
-    }
-    else if(req.url==='/node')
-    {
-        res.write(' Welcome to my Node Js project');
-    }
+var http = require('http');
+const fs= require('fs');
+const { error } = require('console');
 
-});
-server.listen(PORT);
-       
-      
+http.createServer(function (req, res) {
+    const url=req.url;
+    const method=req.method;
+    if(url ==='/' ){
+  fs.readFile('text.txt','utf-8',(error,data)=>{
+    res.write(data);
+    return res.end();
+
+ })
+
+res.write('<html>');
+res.write('<head><title>Node Project</title></head>');
+res.write('<body><form action="/message" method="POST"><input type="text" name="message"><button type="submit">Add</button></form></body>');
+res.write('</html>');
+    }
+if(url==='/message' &&  method==='POST'){
+    const body=[];
+    req.on('data',(chunk)=>{
+        body.push(chunk);
+    });
+    req.on('end',()=>{
+        const parsedBody = Buffer.concat(body).toString();
+        const message=parsedBody.split('=')[1];
+        fs.writeFileSync('text.txt',message);
+        res.writeHead(302, { Location: "http://" + req.headers["host"] + "/" });
+        return res.end();
+        
+
+    })
+}
+
+}).listen(8080); 
