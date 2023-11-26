@@ -1,36 +1,6 @@
-var http = require('http');
-const fs= require('fs');
+const http = require('http');
+const reqHandler=require('./routes');
+
 const { error } = require('console');
 
-http.createServer(function (req, res) {
-    const url=req.url;
-    const method=req.method;
-    if(url ==='/' ){
-  fs.readFile('text.txt','utf-8',(error,data)=>{
-    res.write(data);
-    return res.end();
-
- })
-
-res.write('<html>');
-res.write('<head><title>Node Project</title></head>');
-res.write('<body><form action="/message" method="POST"><input type="text" name="message"><button type="submit">Add</button></form></body>');
-res.write('</html>');
-    }
-if(url==='/message' &&  method==='POST'){
-    const body=[];
-    req.on('data',(chunk)=>{
-        body.push(chunk);
-    });
-    req.on('end',()=>{
-        const parsedBody = Buffer.concat(body).toString();
-        const message=parsedBody.split('=')[1];
-        fs.writeFileSync('text.txt',message);
-        res.writeHead(302, { Location: "http://" + req.headers["host"] + "/" });
-        return res.end();
-        
-
-    })
-}
-
-}).listen(8080); 
+http.createServer(reqHandler).listen(8080); 
