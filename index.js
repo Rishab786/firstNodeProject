@@ -1,6 +1,16 @@
 const http = require('http');
-const reqHandler=require('./routes');
+const express = require('express');
+const app=express();
+app.use((req,res,next)=>{
+    console.log("1st middlware");
+    next();
 
-const { error } = require('console');
+})
+app.use((req,res,next)=>{
+    console.log("2nd middlware");
+    res.send('<h1>Hello World</h1>');
 
-http.createServer(reqHandler).listen(8080); 
+    
+})
+
+http.createServer(app).listen(8080); 
