@@ -1,10 +1,6 @@
-const express = require('express');
-
+const express = require("express");
+const displayController = require("../controllers/displayData");
 const router = express.Router();
 
-router.post('/displayData',(req,res,next)=>{
-    const Name= req.body.userName;
-    const email=req.body.id;
-    res.send(`<h2> Your Name is: ${Name}</h2> <br> <h2> Your Email is:  ${email}</h2>` );
-});
+router.post("/displayData", displayController.getData);
 module.exports = router;
